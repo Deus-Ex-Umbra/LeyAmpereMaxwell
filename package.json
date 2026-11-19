@@ -1,0 +1,41 @@
+{
+  "name": "zmaxwell-ampere-maxwell",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Laboratorio Virtual Interactivo 3D sobre la Ley de Ampère-Maxwell (Next.js + Three.js + KaTeX)",
+  "scripts": {
+    "dev": "next dev",
+    "iniciar:desarrollo": "next dev",
+    "build": "next build",
+    "compilar": "next build",
+    "start": "next start",
+    "iniciar:produccion": "next start",
+    "lint": "eslint",
+    "revisar": "eslint",
+    "typecheck": "tsc --noEmit",
+    "verificar:tipos": "tsc --noEmit",
+    "doctor": "npx -y react-doctor@latest ."
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "katex": "^0.16.22",
+    "lucide-react": "^1.48.0",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwind-merge": "^3.3.1",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/katex": "^0.16.8",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.186.0",
+    "eslint": "^9",
+    "eslint-config-next": "^16.4.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-inter), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Superficies científicas de alta precisión */
+  --color-fondo-base: #060a13;
+  --color-fondo-elevado: #0b1222;
+  --color-panel: #0f172a;
+  --color-panel-suave: #131d33;
+  --color-borde-panel: rgba(148, 163, 184, 0.16);
+  --color-borde-activo: rgba(56, 189, 248, 0.4);
+  --color-texto-principal: #f1f5f9;
+  --color-texto-secundario: #94a3b8;
+  --color-texto-tenue: #64748b;
+
+  /* Paleta semántica deus-parcial.sty adaptada a modo oscuro de alto contraste */
+  --color-azul-activo: #38bdf8;
+  --color-azul-marco: #2980b9;
+  --color-rojo-anulado: #f87171;
+  --color-verde-inducido: #34d399;
+  --color-morado-frontera: #c084fc;
+  --color-naranja-constante: #fb923c;
+  --color-ambar-destacar: #fbbf24;
+  --color-ambar-destacar-fondo: rgba(251, 191, 36, 0.14);
+
+  /* Tokens cromáticos de campos y vectores electromagnéticos */
+  --color-vector-e: #38bdf8;
+  --color-vector-d: #60a5fa;
+  --color-vector-b: #f43f5e;
+  --color-vector-h: #fb7185;
+  --color-vector-jc: #fbbf24;
+  --color-vector-jd: #a855f7;
+  --color-vector-n: #10b981;
+}
+
+:root {
+  color-scheme: dark;
+  --fondo-base: #060a13;
+  --fondo-elevado: #0b1222;
+  --panel: #0f172a;
+  --borde-panel: rgba(148, 163, 184, 0.16);
+  --azul-activo: #38bdf8;
+  --rojo-anulado: #f87171;
+  --verde-inducido: #34d399;
+  --morado-frontera: #c084fc;
+  --naranja-constante: #fb923c;
+  --ambar-destacar: #fbbf24;
+  --vector-e: #38bdf8;
+  --vector-d: #60a5fa;
+  --vector-b: #f43f5e;
+  --vector-h: #fb7185;
+  --vector-jc: #fbbf24;
+  --vector-jd: #a855f7;
+  --vector-n: #10b981;
+}
+
+html {
+  background-color: var(--fondo-base);
+  color: var(--color-texto-principal);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  background-color: var(--fondo-base);
+  color: var(--color-texto-principal);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overflow-x: hidden;
+}
+
+.rejilla-tecnica {
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.055) 1px, transparent 1px),
+    linear-gradient(to right, rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+}
+
+.panel-laboratorio {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.84) 0%,
+    rgba(11, 18, 34, 0.88) 100%
+  );
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow:
+    inset 0 1px 0 0 rgba(248, 250, 252, 0.05),
+    0 12px 32px -12px rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(12px);
+}
+
+.panel-laboratorio-elevado {
+  background: linear-gradient(
+    180deg,
+    rgba(19, 29, 51, 0.9) 0%,
+    rgba(11, 18, 34, 0.92) 100%
+  );
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  box-shadow:
+    inset 0 1px 0 0 rgba(56, 189, 248, 0.1),
+    0 18px 40px -16px rgba(2, 6, 23, 0.82);
+  backdrop-filter: blur(14px);
+}
+
+.formula-katex-bloque {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.25rem;
+}
+
+.formula-katex-bloque .katex-display {
+  margin: 0.25rem 0;
+}
+
+.katex {
+  color: inherit;
+  font-size: 1.04em;
+}
+
+.katex-termino-interactivo {
+  border-radius: 0.375rem;
+  padding: 0.08rem 0.24rem;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease;
+  cursor: pointer;
+}
+
+.katex-termino-interactivo:hover,
+.katex-termino-activo {
+  background-color: rgba(56, 189, 248, 0.16);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.45);
+}
+
+/* Scrollbar científico fino */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.45) rgba(6, 10, 19, 0.4);
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(6, 10, 19, 0.4);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 116, 139, 0.42);
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(148, 163, 184, 0.65);
+}
