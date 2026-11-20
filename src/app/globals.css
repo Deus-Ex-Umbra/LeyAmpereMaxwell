@@ -1,53 +1,65 @@
 @import "tailwindcss";
 
+@custom-variant claro (&:where(.claro, .claro *));
+
 @theme inline {
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-display: var(--font-space-grotesk), var(--font-inter), sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
-  /* Superficies científicas de alta precisión */
-  --color-fondo-base: #060a13;
-  --color-fondo-elevado: #0b1222;
-  --color-panel: #0f172a;
-  --color-panel-suave: #131d33;
-  --color-borde-panel: rgba(148, 163, 184, 0.16);
-  --color-borde-activo: rgba(56, 189, 248, 0.4);
-  --color-texto-principal: #f1f5f9;
-  --color-texto-secundario: #94a3b8;
-  --color-texto-tenue: #64748b;
+  /* Referencia dinámica a variables de tema para soportar modo oscuro y claro */
+  --color-fondo-base: var(--fondo-base);
+  --color-fondo-elevado: var(--fondo-elevado);
+  --color-panel: var(--panel);
+  --color-panel-suave: var(--panel-suave);
+  --color-borde-panel: var(--borde-panel);
+  --color-borde-activo: var(--borde-activo);
+  --color-texto-principal: var(--texto-principal);
+  --color-texto-secundario: var(--texto-secundario);
+  --color-texto-tenue: var(--texto-tenue);
 
-  /* Paleta semántica deus-parcial.sty adaptada a modo oscuro de alto contraste */
-  --color-azul-activo: #38bdf8;
-  --color-azul-marco: #2980b9;
-  --color-rojo-anulado: #f87171;
-  --color-verde-inducido: #34d399;
-  --color-morado-frontera: #c084fc;
-  --color-naranja-constante: #fb923c;
-  --color-ambar-destacar: #fbbf24;
-  --color-ambar-destacar-fondo: rgba(251, 191, 36, 0.14);
+  --color-azul-activo: var(--azul-activo);
+  --color-azul-marco: var(--azul-marco);
+  --color-rojo-anulado: var(--rojo-anulado);
+  --color-verde-inducido: var(--verde-inducido);
+  --color-morado-frontera: var(--morado-frontera);
+  --color-naranja-constante: var(--naranja-constante);
+  --color-ambar-destacar: var(--ambar-destacar);
+  --color-ambar-destacar-fondo: var(--ambar-destacar-fondo);
 
-  /* Tokens cromáticos de campos y vectores electromagnéticos */
-  --color-vector-e: #38bdf8;
-  --color-vector-d: #60a5fa;
-  --color-vector-b: #f43f5e;
-  --color-vector-h: #fb7185;
-  --color-vector-jc: #fbbf24;
-  --color-vector-jd: #a855f7;
-  --color-vector-n: #10b981;
+  --color-vector-e: var(--vector-e);
+  --color-vector-d: var(--vector-d);
+  --color-vector-b: var(--vector-b);
+  --color-vector-h: var(--vector-h);
+  --color-vector-jc: var(--vector-jc);
+  --color-vector-jd: var(--vector-jd);
+  --color-vector-n: var(--vector-n);
 }
 
-:root {
+:root,
+html.dark {
   color-scheme: dark;
   --fondo-base: #060a13;
   --fondo-elevado: #0b1222;
   --panel: #0f172a;
+  --panel-suave: #131d33;
   --borde-panel: rgba(148, 163, 184, 0.16);
+  --borde-activo: rgba(56, 189, 248, 0.4);
+  --texto-principal: #f1f5f9;
+  --texto-secundario: #94a3b8;
+  --texto-tenue: #64748b;
+
+  /* Paleta semántica deus-parcial.sty adaptada a modo oscuro de alto contraste */
   --azul-activo: #38bdf8;
+  --azul-marco: #2980b9;
   --rojo-anulado: #f87171;
   --verde-inducido: #34d399;
   --morado-frontera: #c084fc;
   --naranja-constante: #fb923c;
   --ambar-destacar: #fbbf24;
+  --ambar-destacar-fondo: rgba(251, 191, 36, 0.14);
+
+  /* Tokens cromáticos de campos y vectores electromagnéticos */
   --vector-e: #38bdf8;
   --vector-d: #60a5fa;
   --vector-b: #f43f5e;
@@ -57,18 +69,52 @@
   --vector-n: #10b981;
 }
 
+html.claro {
+  color-scheme: light;
+  --fondo-base: #f8fafc;
+  --fondo-elevado: #ffffff;
+  --panel: #f1f5f9;
+  --panel-suave: #e2e8f0;
+  --borde-panel: rgba(15, 23, 42, 0.14);
+  --borde-activo: rgba(2, 132, 199, 0.48);
+  --texto-principal: #0f172a;
+  --texto-secundario: #475569;
+  --texto-tenue: #64748b;
+
+  /* Paleta semántica deus-parcial.sty para papel blanco científico */
+  --azul-activo: #0284c7;
+  --azul-marco: #0369a1;
+  --rojo-anulado: #dc2626;
+  --verde-inducido: #059669;
+  --morado-frontera: #7c3aed;
+  --naranja-constante: #ea580c;
+  --ambar-destacar: #b45309;
+  --ambar-destacar-fondo: rgba(245, 158, 11, 0.14);
+
+  --vector-e: #0284c7;
+  --vector-d: #2563eb;
+  --vector-b: #e11d48;
+  --vector-h: #be123c;
+  --vector-jc: #d97706;
+  --vector-jd: #9333ea;
+  --vector-n: #059669;
+}
+
 html {
   background-color: var(--fondo-base);
-  color: var(--color-texto-principal);
+  color: var(--texto-principal);
   scroll-behavior: smooth;
 }
 
 body {
   min-height: 100dvh;
   background-color: var(--fondo-base);
-  color: var(--color-texto-principal);
+  color: var(--texto-principal);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   overflow-x: hidden;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
 }
 
 .rejilla-tecnica {
@@ -78,6 +124,14 @@ body {
     linear-gradient(to right, rgba(56, 189, 248, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
   background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+}
+
+html.claro .rejilla-tecnica {
+  background-image:
+    linear-gradient(to right, rgba(15, 23, 42, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.055) 1px, transparent 1px),
+    linear-gradient(to right, rgba(2, 132, 199, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(2, 132, 199, 0.04) 1px, transparent 1px);
 }
 
 .panel-laboratorio {
@@ -93,6 +147,18 @@ body {
   backdrop-filter: blur(12px);
 }
 
+html.claro .panel-laboratorio {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.94) 0%,
+    rgba(248, 250, 252, 0.96) 100%
+  );
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    0 10px 28px -14px rgba(15, 23, 42, 0.14);
+}
+
 .panel-laboratorio-elevado {
   background: linear-gradient(
     180deg,
@@ -104,6 +170,18 @@ body {
     inset 0 1px 0 0 rgba(56, 189, 248, 0.1),
     0 18px 40px -16px rgba(2, 6, 23, 0.82);
   backdrop-filter: blur(14px);
+}
+
+html.claro .panel-laboratorio-elevado {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(241, 245, 249, 0.96) 100%
+  );
+  border: 1px solid rgba(2, 132, 199, 0.28);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 1),
+    0 14px 32px -14px rgba(15, 23, 42, 0.16);
 }
 
 .formula-katex-bloque {
@@ -139,10 +217,20 @@ body {
   box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.45);
 }
 
+html.claro .katex-termino-interactivo:hover,
+html.claro .katex-termino-activo {
+  background-color: rgba(2, 132, 199, 0.13);
+  box-shadow: 0 0 0 1px rgba(2, 132, 199, 0.45);
+}
+
 /* Scrollbar científico fino */
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(100, 116, 139, 0.45) rgba(6, 10, 19, 0.4);
+}
+
+html.claro * {
+  scrollbar-color: rgba(100, 116, 139, 0.45) rgba(226, 232, 240, 0.6);
 }
 
 *::-webkit-scrollbar {
@@ -152,6 +240,10 @@ body {
 
 *::-webkit-scrollbar-track {
   background: rgba(6, 10, 19, 0.4);
+}
+
+html.claro *::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.6);
 }
 
 *::-webkit-scrollbar-thumb {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { useTemaLaboratorio, type TemaLaboratorio } from "@/contextos";
 import { COLORES_VECTORES } from "@/lib/fisica";
 import {
   calcularFactorResaltado,
@@ -175,6 +176,7 @@ function crearLazoRectanguloAcoplamiento(
 
 interface InstanciaEscenaOnda {
   contexto: ContextoEscenaWebGL;
+  aplicarTema: (_tema: TemaLaboratorio) => void;
   desmontar: () => void;
 }
 
@@ -691,7 +693,18 @@ function montarEscenaOnda(
       contexto.liberar();
     };
 
-    return { contexto, desmontar };
+    const aplicarTema = (_tema: TemaLaboratorio): void => {
+      contexto.aplicarTema(_tema);
+      const es_claro = _tema === "claro";
+      mat_eje_prop.color.set(es_claro ? "#475569" : "#64748b");
+      material_punta_eje.color.set(es_claro ? "#475569" : "#94a3b8");
+      material_fuente_antena.color.set(es_claro ? "#64748b" : "#cbd5e1");
+      for (const etq of todas_etiquetas) {
+        etq.aplicarTema(_tema);
+      }
+    };
+
+    return { contexto, aplicarTema, desmontar };
 }
 
 export function VisorOndaEM3D(_propiedades: PropiedadesVisorOndaEM3D) {
@@ -706,8 +719,11 @@ export function VisorOndaEM3D(_propiedades: PropiedadesVisorOndaEM3D) {
     alFallarWebGL,
   } = _propiedades;
 
+  const { tema } = useTemaLaboratorio();
+  const tema_ref = useRef<TemaLaboratorio>(tema);
   const contenedor_ref = useRef<HTMLDivElement | null>(null);
   const contexto_ref = useRef<ContextoEscenaWebGL | null>(null);
+  const instancia_ref = useRef<InstanciaEscenaOnda | null>(null);
   const al_fallar_ref = useRef(alFallarWebGL);
   const estado_ref = useRef<EstadoVivoOnda>({
     parametros,
@@ -717,6 +733,11 @@ export function VisorOndaEM3D(_propiedades: PropiedadesVisorOndaEM3D) {
     en_reproduccion,
     termino_resaltado,
   });
+
+  useEffect(() => {
+    tema_ref.current = tema;
+    instancia_ref.current?.aplicarTema(tema);
+  }, [tema]);
 
   useEffect(() => {
     al_fallar_ref.current = alFallarWebGL;
@@ -760,9 +781,12 @@ export function VisorOndaEM3D(_propiedades: PropiedadesVisorOndaEM3D) {
       al_fallar_ref.current?.();
       return;
     }
+    instancia.aplicarTema(tema_ref.current);
+    instancia_ref.current = instancia;
     contexto_ref.current = instancia.contexto;
     return () => {
       instancia.desmontar();
+      instancia_ref.current = null;
       contexto_ref.current = null;
     };
   }, []);

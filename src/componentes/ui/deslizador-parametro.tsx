@@ -249,7 +249,7 @@ export function DeslizadorParametro(_propiedades: PropiedadesDeslizadorParametro
         <div className="relative flex flex-1 items-center py-1">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 h-1.5 overflow-hidden rounded-full bg-slate-800"
+            className="pointer-events-none absolute inset-x-0 h-1.5 overflow-hidden rounded-full bg-panel-suave"
           >
             <div
               className={combinarClases("h-full rounded-full", estilo.barra_relleno)}
@@ -272,8 +272,8 @@ export function DeslizadorParametro(_propiedades: PropiedadesDeslizadorParametro
             style={{ accentColor: estilo.color_acento_css }}
             className={combinarClases(
               "relative z-10 h-4 w-full cursor-pointer appearance-none bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azul-activo/60 disabled:cursor-not-allowed",
-              "[&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:bg-slate-100 [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(2,6,23,0.9)] [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110",
-              "[&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:bg-slate-100 [&::-moz-range-thumb]:shadow-[0_0_8px_rgba(2,6,23,0.9)]",
+              "[&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-[0_1px_6px_rgba(15,23,42,0.45)] [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110",
+              "[&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-[0_1px_6px_rgba(15,23,42,0.45)]",
               estilo.clases_perilla,
             )}
           />

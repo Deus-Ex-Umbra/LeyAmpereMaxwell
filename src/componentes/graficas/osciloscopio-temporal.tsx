@@ -2,6 +2,7 @@
 
 import { useCallback, useId, useMemo, useRef, useState } from "react";
 import { Radio } from "lucide-react";
+import { useTemaLaboratorio } from "@/contextos";
 import { InsigniaEstado, TarjetaLaboratorio } from "@/componentes/ui";
 import {
   COLORES_VECTORES,
@@ -85,6 +86,22 @@ function normalizarAnguloPositivo(_angulo: number): number {
   return mod < 0 ? mod + DOS_PI : mod;
 }
 
+const MAPA_COLOR_CANAL_CLARO: Record<string, string> = {
+  "#fbbf24": "#b45309",
+  "#22c55e": "#15803d",
+  "#38bdf8": "#0369a1",
+  "#0ea5e9": "#0284c7",
+  "#ef4444": "#dc2626",
+  "#a855f7": "#7e22ce",
+};
+
+function adaptarColorCanal(_color: string, _es_claro: boolean): string {
+  if (!_es_claro) {
+    return _color;
+  }
+  return MAPA_COLOR_CANAL_CLARO[_color.toLowerCase()] ?? _color;
+}
+
 export function OsciloscopioTemporal(
   _propiedades: PropiedadesOsciloscopioTemporal,
 ) {
@@ -101,6 +118,7 @@ export function OsciloscopioTemporal(
     clase_extra,
   } = _propiedades;
 
+  const { es_claro } = useTemaLaboratorio();
   const prefijo_id = useId().replace(/:/g, "");
   const [canales_visibles, setCanalesVisibles] = useState<
     Record<IdCanalOsciloscopio, boolean>
@@ -580,6 +598,7 @@ export function OsciloscopioTemporal(
       <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {datos_osciloscopio.canales.map((_canal) => {
           const activo = canales_visibles[_canal.id];
+          const color_canal = adaptarColorCanal(_canal.color, es_claro);
           return (
             <button
               key={_canal.id}
@@ -589,7 +608,7 @@ export function OsciloscopioTemporal(
               className={combinarClases(
                 "flex flex-col rounded-xl border px-2.5 py-1.5 text-left transition-colors",
                 activo
-                  ? "border-slate-600/60 bg-fondo-base/85"
+                  ? "border-borde-panel-activo bg-fondo-base/85 claro:bg-white"
                   : "border-borde-panel bg-fondo-base/40 opacity-45 hover:opacity-75",
               )}
             >
@@ -597,7 +616,7 @@ export function OsciloscopioTemporal(
                 <span className="inline-flex items-center gap-1.5">
                   <span
                     className="h-2 w-2 rounded-full"
-                    style={{ backgroundColor: _canal.color }}
+                    style={{ backgroundColor: color_canal }}
                   />
                   <span className="font-mono">{_canal.etiqueta}</span>
                 </span>
@@ -609,7 +628,13 @@ export function OsciloscopioTemporal(
               </span>
               <span
                 className="mt-0.5 truncate font-mono text-xs font-semibold tabular-nums"
-                style={{ color: activo ? _canal.color : "#94a3b8" }}
+                style={{
+                  color: activo
+                    ? color_canal
+                    : es_claro
+                      ? "#64748b"
+                      : "#94a3b8",
+                }}
               >
                 {
                   formatearUnidadSI(_canal.valor_actual, _canal.unidad, {
@@ -624,7 +649,7 @@ export function OsciloscopioTemporal(
       </div>
 
       {/* Pantalla SVG del osciloscopio */}
-      <div className="relative overflow-hidden rounded-xl border border-borde-panel bg-[#060a13]">
+      <div className="relative overflow-hidden rounded-xl border border-borde-panel bg-fondo-base">
         <svg
           ref={svg_ref}
           viewBox={`0 0 ${ANCHO_SVG} ${ALTO_SVG}`}
@@ -664,8 +689,8 @@ export function OsciloscopioTemporal(
             y={MARGEN_SUP}
             width={ANCHO_AREA}
             height={ALTO_AREA}
-            fill="#070e1c"
-            stroke="rgba(148,163,184,0.22)"
+            fill={es_claro ? "#ffffff" : "#070e1c"}
+            stroke={es_claro ? "rgba(15,23,42,0.16)" : "rgba(148,163,184,0.22)"}
             strokeWidth={1}
           />
 
@@ -680,7 +705,15 @@ export function OsciloscopioTemporal(
                   y1={y}
                   x2={MARGEN_IZQ + ANCHO_AREA}
                   y2={y}
-                  stroke={es_cero ? "rgba(148,163,184,0.34)" : "rgba(148,163,184,0.11)"}
+                  stroke={
+                    es_cero
+                      ? es_claro
+                        ? "rgba(15,23,42,0.34)"
+                        : "rgba(148,163,184,0.34)"
+                      : es_claro
+                        ? "rgba(15,23,42,0.1)"
+                        : "rgba(148,163,184,0.11)"
+                  }
                   strokeWidth={es_cero ? 1.1 : 0.8}
                   strokeDasharray={es_cero ? undefined : "3 3"}
                 />
@@ -688,7 +721,7 @@ export function OsciloscopioTemporal(
                   x={MARGEN_IZQ - 8}
                   y={y + 3.5}
                   textAnchor="end"
-                  fill="#94a3b8"
+                  fill={es_claro ? "#475569" : "#94a3b8"}
                   fontSize={9.5}
                   fontFamily="var(--font-mono), monospace"
                 >
@@ -708,14 +741,18 @@ export function OsciloscopioTemporal(
                   y1={MARGEN_SUP}
                   x2={x}
                   y2={MARGEN_SUP + ALTO_AREA}
-                  stroke="rgba(148,163,184,0.12)"
+                  stroke={
+                    es_claro
+                      ? "rgba(15,23,42,0.11)"
+                      : "rgba(148,163,184,0.12)"
+                  }
                   strokeWidth={0.9}
                 />
                 <text
                   x={x}
                   y={MARGEN_SUP + ALTO_AREA + 16}
                   textAnchor="middle"
-                  fill="#94a3b8"
+                  fill={es_claro ? "#475569" : "#94a3b8"}
                   fontSize={9.5}
                   fontFamily="var(--font-mono), monospace"
                 >
@@ -729,7 +766,7 @@ export function OsciloscopioTemporal(
             x={MARGEN_IZQ + ANCHO_AREA * 0.5}
             y={ALTO_SVG - 8}
             textAnchor="middle"
-            fill="#cbd5e1"
+            fill={es_claro ? "#334155" : "#cbd5e1"}
             fontSize={10.5}
             fontFamily="var(--font-mono), monospace"
           >
@@ -739,7 +776,7 @@ export function OsciloscopioTemporal(
             x={14}
             y={MARGEN_SUP + ALTO_AREA * 0.5}
             textAnchor="middle"
-            fill="#94a3b8"
+            fill={es_claro ? "#475569" : "#94a3b8"}
             fontSize={10}
             fontFamily="var(--font-mono), monospace"
             transform={`rotate(-90 14 ${MARGEN_SUP + ALTO_AREA * 0.5})`}
@@ -753,6 +790,7 @@ export function OsciloscopioTemporal(
               if (!canales_visibles[_canal.id]) {
                 return null;
               }
+              const color_canal = adaptarColorCanal(_canal.color, es_claro);
               const pts = datos_osciloscopio.muestras.map((_m) => ({
                 x: xDeU(_m.u),
                 y: yNormalizado(_m[_canal.id], _canal.pico),
@@ -762,7 +800,7 @@ export function OsciloscopioTemporal(
                   key={_canal.id}
                   d={construirRuta(pts)}
                   fill="none"
-                  stroke={_canal.color}
+                  stroke={color_canal}
                   strokeWidth={_canal.desactivado_fisico ? 1.4 : 2.1}
                   strokeOpacity={_canal.desactivado_fisico ? 0.45 : 0.95}
                   strokeDasharray={
@@ -786,13 +824,14 @@ export function OsciloscopioTemporal(
               y1={MARGEN_SUP}
               x2={x_cursor}
               y2={MARGEN_SUP + ALTO_AREA}
-              stroke="#facc15"
+              stroke={es_claro ? "#b45309" : "#facc15"}
               strokeWidth={1.6}
             />
             {datos_osciloscopio.canales.map((_canal) => {
               if (!canales_visibles[_canal.id]) {
                 return null;
               }
+              const color_canal = adaptarColorCanal(_canal.color, es_claro);
               const y_pt = yNormalizado(_canal.valor_actual, _canal.pico);
               return (
                 <circle
@@ -800,8 +839,8 @@ export function OsciloscopioTemporal(
                   cx={x_cursor}
                   cy={y_pt}
                   r={4}
-                  fill={_canal.color}
-                  stroke="#060a13"
+                  fill={color_canal}
+                  stroke={es_claro ? "#ffffff" : "#060a13"}
                   strokeWidth={1.4}
                 />
               );
@@ -816,7 +855,9 @@ export function OsciloscopioTemporal(
                 y1={MARGEN_SUP}
                 x2={x_sobre}
                 y2={MARGEN_SUP + ALTO_AREA}
-                stroke="rgba(241,245,249,0.35)"
+                stroke={
+                  es_claro ? "rgba(15,23,42,0.35)" : "rgba(241,245,249,0.35)"
+                }
                 strokeWidth={1}
                 strokeDasharray="2 2"
               />
@@ -831,14 +872,22 @@ export function OsciloscopioTemporal(
                   width={184}
                   height={86}
                   rx={8}
-                  fill="rgba(11, 18, 34, 0.95)"
-                  stroke="rgba(56, 189, 248, 0.4)"
+                  fill={
+                    es_claro
+                      ? "rgba(255, 255, 255, 0.97)"
+                      : "rgba(11, 18, 34, 0.95)"
+                  }
+                  stroke={
+                    es_claro
+                      ? "rgba(2, 132, 199, 0.35)"
+                      : "rgba(56, 189, 248, 0.4)"
+                  }
                   strokeWidth={1}
                 />
                 <text
                   x={10}
                   y={16}
-                  fill="#f8fafc"
+                  fill={es_claro ? "#0f172a" : "#f8fafc"}
                   fontSize={9.5}
                   fontWeight={600}
                   fontFamily="var(--font-mono), monospace"
@@ -850,7 +899,7 @@ export function OsciloscopioTemporal(
                     key={`tt-${_canal.id}`}
                     x={10}
                     y={32 + _idx * 14}
-                    fill={_canal.color}
+                    fill={adaptarColorCanal(_canal.color, es_claro)}
                     fontSize={9.5}
                     fontFamily="var(--font-mono), monospace"
                   >

@@ -552,7 +552,7 @@ export function ModuloSimulador(_propiedades: PropiedadesModuloSimulador) {
                     {preset_actual.pregunta_guia}
                   </p>
                   {mostrar_respuesta_guia && (
-                    <p className="mt-1.5 border-t border-azul-activo/20 pt-1.5 text-[11px] leading-relaxed text-emerald-200">
+                    <p className="mt-1.5 border-t border-azul-activo/20 pt-1.5 text-[11px] leading-relaxed text-texto-principal">
                       <span className="font-mono font-semibold uppercase text-verde-inducido">
                         Observación esperada:{" "}
                       </span>

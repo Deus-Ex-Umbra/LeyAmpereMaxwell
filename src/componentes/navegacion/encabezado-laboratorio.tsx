@@ -5,9 +5,12 @@ import {
   Award,
   BookOpen,
   Calculator,
+  Moon,
   Orbit,
+  Sun,
   type LucideIcon,
 } from "lucide-react";
+import { useTemaLaboratorio } from "@/contextos";
 import type { PestanaAplicacion } from "@/tipos";
 import { InsigniaEstado } from "@/componentes/ui";
 import { combinarClases } from "@/lib/utils";
@@ -65,6 +68,8 @@ export function EncabezadoLaboratorio(
     maxwell_activo,
   } = _propiedades;
 
+  const { es_claro, alternarTema } = useTemaLaboratorio();
+
   const mostrar_misiones =
     typeof misiones_completadas === "number" &&
     typeof total_misiones === "number" &&
@@ -109,7 +114,7 @@ export function EncabezadoLaboratorio(
                 className={combinarClases(
                   "inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azul-activo/60 lg:flex-initial sm:text-sm",
                   esta_activo
-                    ? "border border-azul-activo/40 bg-azul-activo/15 text-texto-principal shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                    ? "border border-azul-activo/40 bg-azul-activo/15 text-texto-principal shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] claro:shadow-none"
                     : "border border-transparent text-texto-secundario hover:bg-panel/80 hover:text-texto-principal",
                 )}
               >
@@ -154,6 +159,32 @@ export function EncabezadoLaboratorio(
               </InsigniaEstado>
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={alternarTema}
+            aria-pressed={es_claro}
+            aria-label={
+              es_claro
+                ? "Cambiar a modo oscuro"
+                : "Cambiar a modo claro"
+            }
+            title={
+              es_claro
+                ? "Cambiar a modo oscuro"
+                : "Cambiar a modo claro"
+            }
+            className="inline-flex items-center gap-1.5 rounded-full border border-borde-panel bg-fondo-elevado px-2.5 py-1 text-xs font-medium text-texto-secundario transition-colors hover:border-azul-activo/45 hover:text-texto-principal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-azul-activo/60"
+          >
+            {es_claro ? (
+              <Moon className="h-3.5 w-3.5 text-azul-activo" aria-hidden="true" />
+            ) : (
+              <Sun className="h-3.5 w-3.5 text-ambar-destacar" aria-hidden="true" />
+            )}
+            <span className="hidden sm:inline">
+              {es_claro ? "Oscuro" : "Claro"}
+            </span>
+          </button>
         </div>
       </div>
     </header>

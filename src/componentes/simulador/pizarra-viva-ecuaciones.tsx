@@ -397,7 +397,7 @@ export function PizarraVivaEcuaciones(
       }
     >
       {/* Bloque matemático principal + sustitución en vivo */}
-      <div className="space-y-2 rounded-xl border border-borde-panel bg-[#060a13]/90 p-3.5">
+      <div className="space-y-2 rounded-xl border border-borde-panel bg-fondo-base/90 p-3.5">
         <FormulaKatex
           expresion={ecuacion_simbolica}
           en_bloque

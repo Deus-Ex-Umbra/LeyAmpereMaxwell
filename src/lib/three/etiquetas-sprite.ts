@@ -1,10 +1,12 @@
 import * as THREE from "three";
+import type { TemaLaboratorio } from "@/contextos";
 
 export interface OpcionesEtiquetaSprite {
   texto: string;
   subindice?: string;
   es_vector?: boolean;
   color_texto: string;
+  color_texto_claro?: string;
   color_borde?: string;
   color_fondo?: string;
   escala_mundo?: number;
@@ -17,7 +19,30 @@ export interface EtiquetaSpriteCientifica {
   material: THREE.SpriteMaterial;
   actualizarTexto: (_texto: string, _subindice?: string) => void;
   actualizarOpacidad: (_opacidad: number) => void;
+  aplicarTema: (_tema: TemaLaboratorio) => void;
   liberar: () => void;
+}
+
+const MAPA_CONTRASTE_CLARO: Record<string, string> = {
+  "#facc15": "#a16207",
+  "#fbbf24": "#b45309",
+  "#fde047": "#a16207",
+  "#38bdf8": "#0369a1",
+  "#0ea5e9": "#0369a1",
+  "#2dd4bf": "#0f766e",
+  "#c084fc": "#7e22ce",
+  "#a855f7": "#7e22ce",
+  "#ef4444": "#dc2626",
+  "#f87171": "#b91c1c",
+  "#10b981": "#047857",
+  "#34d399": "#047857",
+  "#3b82f6": "#1d4ed8",
+  "#cbd5e1": "#334155",
+  "#f8fafc": "#0f172a",
+};
+
+function resolverColorEnClaro(_color: string): string {
+  return MAPA_CONTRASTE_CLARO[_color.toLowerCase()] ?? _color;
 }
 
 const ANCHO_CANVAS = 256;
@@ -149,6 +174,9 @@ export function crearEtiquetaSprite(
   canvas.width = ANCHO_CANVAS;
   canvas.height = ALTO_CANVAS;
 
+  const color_oscuro_base = _opciones.color_texto;
+  const borde_oscuro_base = _opciones.color_borde;
+  const fondo_oscuro_base = _opciones.color_fondo;
   const opciones_actuales: OpcionesEtiquetaSprite = { ..._opciones };
   renderizarEtiquetaEnCanvas(canvas, opciones_actuales);
 
@@ -193,6 +221,31 @@ export function crearEtiquetaSprite(
     material.opacity = THREE.MathUtils.clamp(_opacidad, 0, 1);
   };
 
+  const aplicarTema = (_tema: TemaLaboratorio): void => {
+    const es_claro = _tema === "claro";
+    const color_claro =
+      opciones_actuales.color_texto_claro ??
+      resolverColorEnClaro(color_oscuro_base);
+    const nuevo_color = es_claro ? color_claro : color_oscuro_base;
+    const nuevo_fondo = es_claro
+      ? "rgba(255, 255, 255, 0.94)"
+      : fondo_oscuro_base;
+    const nuevo_borde = es_claro ? color_claro : borde_oscuro_base;
+
+    if (
+      opciones_actuales.color_texto === nuevo_color &&
+      opciones_actuales.color_fondo === nuevo_fondo &&
+      opciones_actuales.color_borde === nuevo_borde
+    ) {
+      return;
+    }
+    opciones_actuales.color_texto = nuevo_color;
+    opciones_actuales.color_fondo = nuevo_fondo;
+    opciones_actuales.color_borde = nuevo_borde;
+    renderizarEtiquetaEnCanvas(canvas, opciones_actuales);
+    textura.needsUpdate = true;
+  };
+
   const liberar = (): void => {
     textura.dispose();
     material.dispose();
@@ -204,6 +257,7 @@ export function crearEtiquetaSprite(
     material,
     actualizarTexto,
     actualizarOpacidad,
+    aplicarTema,
     liberar,
   };
 }

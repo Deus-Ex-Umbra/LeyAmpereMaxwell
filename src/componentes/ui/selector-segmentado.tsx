@@ -81,7 +81,7 @@ export function SelectorSegmentado<T extends string>(
               ancho_completo ? "flex-1" : "",
               tamano === "sm" ? "px-2.5 py-1.5 text-xs" : "px-3.5 py-2 text-xs sm:text-sm",
               esta_activo
-                ? "border border-azul-activo/40 bg-azul-activo/15 text-texto-principal shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                ? "border border-azul-activo/40 bg-azul-activo/15 text-texto-principal shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] claro:shadow-none"
                 : "border border-transparent text-texto-secundario hover:bg-panel/80 hover:text-texto-principal",
             )}
           >

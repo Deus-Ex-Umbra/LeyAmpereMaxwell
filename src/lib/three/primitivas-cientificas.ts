@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import type { TemaLaboratorio } from "@/contextos";
 import {
   crearEtiquetaSprite,
   type EtiquetaSpriteCientifica,
@@ -65,6 +66,7 @@ export interface ContextoEscenaWebGL {
     >,
   ) => void;
   actualizarTransicionCamara: (_delta_s: number) => void;
+  aplicarTema: (_tema: TemaLaboratorio) => void;
   liberar: () => void;
 }
 
@@ -76,6 +78,7 @@ export interface EstadoResaltado3D {
 }
 
 export const COLOR_FONDO_LABORATORIO = "#060a13";
+export const COLOR_FONDO_LABORATORIO_CLARO = "#f8fafc";
 
 const EJE_Y_UNITARIO = new THREE.Vector3(0, 1, 0);
 
@@ -172,29 +175,51 @@ export function liberarObjetoThree(_objeto: THREE.Object3D): void {
   });
 }
 
+export interface RejillaLaboratorio {
+  grupo: THREE.Group;
+  aplicarTema: (_es_claro: boolean) => void;
+}
+
 export function crearRejillaLaboratorio(
   _tamano: number,
   _divisiones: number,
   _altura_y: number,
-): THREE.Group {
+): RejillaLaboratorio {
   const grupo = new THREE.Group();
   grupo.position.y = _altura_y;
 
-  const rejilla_principal = new THREE.GridHelper(
+  const rejilla_oscura = new THREE.GridHelper(
     _tamano,
     _divisiones,
     new THREE.Color("#294666"),
     new THREE.Color("#132036"),
   );
-  const materiales_rejilla = Array.isArray(rejilla_principal.material)
-    ? rejilla_principal.material
-    : [rejilla_principal.material];
-  for (const mat of materiales_rejilla) {
+  const materiales_oscura = Array.isArray(rejilla_oscura.material)
+    ? rejilla_oscura.material
+    : [rejilla_oscura.material];
+  for (const mat of materiales_oscura) {
     mat.transparent = true;
     mat.opacity = 0.42;
     mat.depthWrite = false;
   }
-  grupo.add(rejilla_principal);
+
+  const rejilla_clara = new THREE.GridHelper(
+    _tamano,
+    _divisiones,
+    new THREE.Color("#94a3b8"),
+    new THREE.Color("#cbd5e1"),
+  );
+  const materiales_clara = Array.isArray(rejilla_clara.material)
+    ? rejilla_clara.material
+    : [rejilla_clara.material];
+  for (const mat of materiales_clara) {
+    mat.transparent = true;
+    mat.opacity = 0.52;
+    mat.depthWrite = false;
+  }
+  rejilla_clara.visible = false;
+
+  grupo.add(rejilla_oscura, rejilla_clara);
 
   const geometria_anillo = new THREE.RingGeometry(
     _tamano * 0.46,
@@ -213,7 +238,14 @@ export function crearRejillaLaboratorio(
   anillo.position.y = 0.002;
   grupo.add(anillo);
 
-  return grupo;
+  const aplicarTema = (_es_claro: boolean): void => {
+    rejilla_oscura.visible = !_es_claro;
+    rejilla_clara.visible = _es_claro;
+    material_anillo.color.set(_es_claro ? "#0284c7" : "#38bdf8");
+    material_anillo.opacity = _es_claro ? 0.24 : 0.14;
+  };
+
+  return { grupo, aplicarTema };
 }
 
 export function crearEjesCartesianosRGB(
@@ -637,7 +669,7 @@ export function crearContextoEscenaWebGL(
       _opciones?.longitud_ejes ?? 1.25,
       _opciones?.origen_ejes ?? new THREE.Vector3(-4.2, -2.22, -3.2),
     );
-  grupo_referencia.add(rejilla, grupo_ejes);
+  grupo_referencia.add(rejilla.grupo, grupo_ejes);
   escena.add(grupo_referencia);
 
   let transicion_activa = false;
@@ -715,6 +747,29 @@ export function crearContextoEscenaWebGL(
     }
   };
 
+  const aplicarTema = (_tema: TemaLaboratorio): void => {
+    const es_claro = _tema === "claro";
+    const color_fondo = es_claro
+      ? COLOR_FONDO_LABORATORIO_CLARO
+      : COLOR_FONDO_LABORATORIO;
+    escena.background = new THREE.Color(color_fondo);
+    escena.fog = new THREE.FogExp2(color_fondo, es_claro ? 0.012 : 0.02);
+
+    luz_ambiental.color.set(es_claro ? "#ffffff" : "#cbd5e1");
+    luz_ambiental.intensity = es_claro ? 0.85 : 0.56;
+    luz_hemisferica.color.set(es_claro ? "#f8fafc" : "#bae6fd");
+    luz_hemisferica.groundColor.set(es_claro ? "#cbd5e1" : "#0f172a");
+    luz_hemisferica.intensity = es_claro ? 0.78 : 0.62;
+    luz_relleno.color.set(es_claro ? "#7dd3fc" : "#38bdf8");
+    luz_relleno.intensity = es_claro ? 0.32 : 0.45;
+    renderizador.toneMappingExposure = es_claro ? 1.04 : 1.12;
+
+    rejilla.aplicarTema(es_claro);
+    for (const etiqueta of etiquetas_ejes) {
+      etiqueta.aplicarTema(_tema);
+    }
+  };
+
   const liberar = (): void => {
     observador_tamano.disconnect();
     if (id_raf_redimension !== null) {
@@ -742,6 +797,7 @@ export function crearContextoEscenaWebGL(
     redimensionar,
     aplicarPresetCamara,
     actualizarTransicionCamara,
+    aplicarTema,
     liberar,
   };
 }

@@ -4,6 +4,7 @@ import { useId, useMemo, useState } from "react";
 import { Compass } from "lucide-react";
 import { FormulaKatex } from "@/componentes/ecuaciones/formula-katex";
 import { InsigniaEstado, TarjetaLaboratorio } from "@/componentes/ui";
+import { useTemaLaboratorio } from "@/contextos";
 import {
   COLORES_VECTORES,
   calcularRegimenConduccion,
@@ -54,6 +55,7 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
   } = _propiedades;
 
   const prefijo_id = useId().replace(/:/g, "");
+  const { es_claro } = useTemaLaboratorio();
   const [rotar_en_vivo, setRotarEnVivo] = useState<boolean>(false);
   const [fasor_sobre, setFasorSobre] = useState<IdFasor | null>(null);
 
@@ -219,7 +221,7 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
       }
     >
       <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-[minmax(0,1fr)_200px]">
-        <div className="relative overflow-hidden rounded-xl border border-borde-panel bg-[#060a13]">
+        <div className="relative overflow-hidden rounded-xl border border-borde-panel bg-fondo-base">
           <svg
             viewBox={`0 0 ${TAMANO_SVG} ${TAMANO_SVG}`}
             role="img"
@@ -256,7 +258,11 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
                 cy={CENTRO_Y}
                 r={RADIO_MAX * _r}
                 fill="none"
-                stroke="rgba(148,163,184,0.12)"
+                stroke={
+                  es_claro
+                    ? "rgba(15,23,42,0.14)"
+                    : "rgba(148,163,184,0.12)"
+                }
                 strokeWidth={0.9}
                 strokeDasharray={_r < 1 ? "3 3" : undefined}
               />
@@ -268,7 +274,9 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
               y1={CENTRO_Y}
               x2={TAMANO_SVG - 24}
               y2={CENTRO_Y}
-              stroke="rgba(148,163,184,0.3)"
+              stroke={
+                es_claro ? "rgba(15,23,42,0.28)" : "rgba(148,163,184,0.3)"
+              }
               strokeWidth={1}
             />
             <line
@@ -276,14 +284,16 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
               y1={24}
               x2={CENTRO_X}
               y2={TAMANO_SVG - 26}
-              stroke="rgba(148,163,184,0.3)"
+              stroke={
+                es_claro ? "rgba(15,23,42,0.28)" : "rgba(148,163,184,0.3)"
+              }
               strokeWidth={1}
             />
             <text
               x={TAMANO_SVG - 20}
               y={CENTRO_Y - 7}
               textAnchor="end"
-              fill="#94a3b8"
+              fill={es_claro ? "#475569" : "#94a3b8"}
               fontSize={10}
               fontFamily="var(--font-mono), monospace"
             >
@@ -293,7 +303,7 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
               x={CENTRO_X + 8}
               y={34}
               textAnchor="start"
-              fill="#c084fc"
+              fill={es_claro ? "#7c3aed" : "#c084fc"}
               fontSize={10}
               fontFamily="var(--font-mono), monospace"
             >
@@ -305,7 +315,11 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
               <path
                 d={`M${q1.x.toFixed(1)},${q1.y.toFixed(1)} L${q2.x.toFixed(1)},${q2.y.toFixed(1)} L${q3.x.toFixed(1)},${q3.y.toFixed(1)}`}
                 fill="none"
-                stroke="rgba(192,132,252,0.55)"
+                stroke={
+                  es_claro
+                    ? "rgba(124,58,237,0.55)"
+                    : "rgba(192,132,252,0.55)"
+                }
                 strokeWidth={1.1}
               />
             )}
@@ -313,7 +327,11 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
             {/* Paralelogramo de suma vectorial */}
             {calculo.lon_jc > 4 && calculo.lon_jd > 4 && (
               <g
-                stroke="rgba(148,163,184,0.32)"
+                stroke={
+                  es_claro
+                    ? "rgba(71,85,105,0.38)"
+                    : "rgba(148,163,184,0.32)"
+                }
                 strokeWidth={1}
                 strokeDasharray="4 3"
               >
@@ -460,7 +478,12 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
               </g>
             )}
 
-            <circle cx={CENTRO_X} cy={CENTRO_Y} r={3.5} fill="#f8fafc" />
+            <circle
+              cx={CENTRO_X}
+              cy={CENTRO_Y}
+              r={3.5}
+              fill={es_claro ? "#0f172a" : "#f8fafc"}
+            />
 
             {/* Tooltip emergente si se inspecciona un fasor */}
             {activo_detalle && (
@@ -471,9 +494,13 @@ export function DiagramaFasorial(_propiedades: PropiedadesDiagramaFasorial) {
                   width={TAMANO_SVG - 24}
                   height={34}
                   rx={8}
-                  fill="rgba(11, 18, 34, 0.95)"
+                  fill={
+                    es_claro
+                      ? "rgba(255, 255, 255, 0.96)"
+                      : "rgba(11, 18, 34, 0.95)"
+                  }
                   stroke={activo_detalle.color}
-                  strokeOpacity={0.55}
+                  strokeOpacity={0.65}
                   strokeWidth={1}
                 />
                 <text

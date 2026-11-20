@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { useTemaLaboratorio, type TemaLaboratorio } from "@/contextos";
 import {
   CEROS_BESSEL_J0,
   COLORES_VECTORES,
@@ -255,6 +256,7 @@ function construirGeometriaAnillosCampo(
 
 interface InstanciaEscenaCapacitor {
   contexto: ContextoEscenaWebGL;
+  aplicarTema: (_tema: TemaLaboratorio) => void;
   desmontar: () => void;
 }
 
@@ -1413,7 +1415,24 @@ function montarEscenaCapacitor(
       contexto.liberar();
     };
 
-    return { contexto, desmontar };
+    const aplicarTema = (_tema: TemaLaboratorio): void => {
+      contexto.aplicarTema(_tema);
+      const es_claro = _tema === "claro";
+      material_lazo.color.set(es_claro ? "#b45309" : COLORES_VECTORES.lazo);
+      material_lazo.emissive.set(es_claro ? "#d97706" : COLORES_VECTORES.lazo);
+      material_lazo.emissiveIntensity = es_claro ? 0.28 : 0.58;
+      material_lineas_s2.color.set(es_claro ? "#7e22ce" : "#d8b4fe");
+      material_lineas_s2.opacity = es_claro ? 0.45 : 0.34;
+      material_anillos_bh.color.set(es_claro ? "#15803d" : COLORES_VECTORES.b);
+      material_anillos_bh.opacity = es_claro ? 0.48 : 0.36;
+      material_placa.color.set(es_claro ? "#64748b" : "#94a3b8");
+      material_borde_placa.color.set(es_claro ? "#334155" : "#cbd5e1");
+      for (const etq of todas_etiquetas) {
+        etq.aplicarTema(_tema);
+      }
+    };
+
+    return { contexto, aplicarTema, desmontar };
 }
 
 export function VisorCapacitor3D(_propiedades: PropiedadesVisorCapacitor3D) {
@@ -1428,8 +1447,11 @@ export function VisorCapacitor3D(_propiedades: PropiedadesVisorCapacitor3D) {
     alFallarWebGL,
   } = _propiedades;
 
+  const { tema } = useTemaLaboratorio();
+  const tema_ref = useRef<TemaLaboratorio>(tema);
   const contenedor_ref = useRef<HTMLDivElement | null>(null);
   const contexto_ref = useRef<ContextoEscenaWebGL | null>(null);
+  const instancia_ref = useRef<InstanciaEscenaCapacitor | null>(null);
   const al_fallar_ref = useRef(alFallarWebGL);
   const estado_ref = useRef<EstadoVivoCapacitor>({
     parametros,
@@ -1439,6 +1461,11 @@ export function VisorCapacitor3D(_propiedades: PropiedadesVisorCapacitor3D) {
     en_reproduccion,
     termino_resaltado,
   });
+
+  useEffect(() => {
+    tema_ref.current = tema;
+    instancia_ref.current?.aplicarTema(tema);
+  }, [tema]);
 
   useEffect(() => {
     al_fallar_ref.current = alFallarWebGL;
@@ -1482,9 +1509,12 @@ export function VisorCapacitor3D(_propiedades: PropiedadesVisorCapacitor3D) {
       al_fallar_ref.current?.();
       return;
     }
+    instancia.aplicarTema(tema_ref.current);
+    instancia_ref.current = instancia;
     contexto_ref.current = instancia.contexto;
     return () => {
       instancia.desmontar();
+      instancia_ref.current = null;
       contexto_ref.current = null;
     };
   }, []);

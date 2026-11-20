@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { useTemaLaboratorio, type TemaLaboratorio } from "@/contextos";
 import {
   COLORES_VECTORES,
   DOS_PI,
@@ -198,6 +199,7 @@ function construirGeometriaAnillosToroide(
 
 interface InstanciaEscenaGeometrias {
   contexto: ContextoEscenaWebGL;
+  aplicarTema: (_tema: TemaLaboratorio) => void;
   desmontar: () => void;
 }
 
@@ -1474,7 +1476,24 @@ function montarEscenaGeometrias(
       contexto.liberar();
     };
 
-    return { contexto, desmontar };
+    const aplicarTema = (_tema: TemaLaboratorio): void => {
+      contexto.aplicarTema(_tema);
+      const es_claro = _tema === "claro";
+      material_lazo.color.set(es_claro ? "#b45309" : COLORES_VECTORES.lazo);
+      material_lazo.emissive.set(es_claro ? "#d97706" : COLORES_VECTORES.lazo);
+      material_lazo.emissiveIntensity = es_claro ? 0.28 : 0.6;
+      material_superficie_lazo.color.set(
+        es_claro ? "#d97706" : COLORES_VECTORES.lazo,
+      );
+      material_superficie_lazo.opacity = es_claro ? 0.14 : 0.11;
+      material_anillos_bh.color.set(es_claro ? "#15803d" : COLORES_VECTORES.b);
+      material_anillos_bh.opacity = es_claro ? 0.46 : 0.34;
+      for (const etq of todas_etiquetas) {
+        etq.aplicarTema(_tema);
+      }
+    };
+
+    return { contexto, aplicarTema, desmontar };
 }
 
 export function VisorGeometrias3D(_propiedades: PropiedadesVisorGeometrias3D) {
@@ -1489,8 +1508,11 @@ export function VisorGeometrias3D(_propiedades: PropiedadesVisorGeometrias3D) {
     alFallarWebGL,
   } = _propiedades;
 
+  const { tema } = useTemaLaboratorio();
+  const tema_ref = useRef<TemaLaboratorio>(tema);
   const contenedor_ref = useRef<HTMLDivElement | null>(null);
   const contexto_ref = useRef<ContextoEscenaWebGL | null>(null);
+  const instancia_ref = useRef<InstanciaEscenaGeometrias | null>(null);
   const al_fallar_ref = useRef(alFallarWebGL);
   const tipo_anterior_ref = useRef<TipoGeometriaAmpere>(parametros.tipo);
   const estado_ref = useRef<EstadoVivoGeometria>({
@@ -1501,6 +1523,11 @@ export function VisorGeometrias3D(_propiedades: PropiedadesVisorGeometrias3D) {
     en_reproduccion,
     termino_resaltado,
   });
+
+  useEffect(() => {
+    tema_ref.current = tema;
+    instancia_ref.current?.aplicarTema(tema);
+  }, [tema]);
 
   useEffect(() => {
     al_fallar_ref.current = alFallarWebGL;
@@ -1559,9 +1586,12 @@ export function VisorGeometrias3D(_propiedades: PropiedadesVisorGeometrias3D) {
       al_fallar_ref.current?.();
       return;
     }
+    instancia.aplicarTema(tema_ref.current);
+    instancia_ref.current = instancia;
     contexto_ref.current = instancia.contexto;
     return () => {
       instancia.desmontar();
+      instancia_ref.current = null;
       contexto_ref.current = null;
     };
   }, []);

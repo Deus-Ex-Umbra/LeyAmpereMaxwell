@@ -539,7 +539,7 @@ export function ContenedorEscena3D(
   return (
     <div
       className={combinarClases(
-        "relative h-[440px] w-full overflow-hidden rounded-2xl border border-borde-panel bg-[#060a13] shadow-[0_18px_48px_-16px_rgba(2,6,23,0.9)] sm:h-[520px]",
+        "relative h-[440px] w-full overflow-hidden rounded-2xl border border-borde-panel bg-fondo-base shadow-[0_18px_48px_-16px_rgba(2,6,23,0.9)] claro:shadow-[0_16px_40px_-16px_rgba(15,23,42,0.16)] sm:h-[520px]",
         clase_extra,
       )}
     >

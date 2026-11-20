@@ -307,7 +307,7 @@ const CLASES_COLOR_RESUMEN: Record<MagnitudResumen["color_token"], string> = {
   morado: "border-morado-frontera/30 bg-morado-frontera/[0.06] text-morado-frontera",
   naranja: "border-naranja-constante/30 bg-naranja-constante/[0.06] text-naranja-constante",
   ambar: "border-ambar-destacar/30 bg-ambar-destacar/[0.06] text-ambar-destacar",
-  cian: "border-sky-400/30 bg-sky-400/[0.06] text-sky-300",
+  cian: "border-sky-500/35 bg-sky-500/[0.08] text-azul-activo",
 };
 
 const OPCIONES_DIELECTRICOS: ReadonlyArray<OpcionSelector<string>> =

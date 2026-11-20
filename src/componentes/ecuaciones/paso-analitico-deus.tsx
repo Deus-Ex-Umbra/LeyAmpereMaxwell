@@ -55,7 +55,7 @@ export function PasoAnaliticoDeus(_propiedades: PropiedadesPasoAnaliticoDeus) {
             <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-texto-tenue">
               Nota
             </p>
-            <p className="mt-1 italic text-slate-300/90">
+            <p className="mt-1 italic text-texto-secundario">
               {paso.nota_conceptual}
             </p>
           </aside>

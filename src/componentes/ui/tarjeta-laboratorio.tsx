@@ -21,9 +21,9 @@ const CLASES_VARIANTE_TARJETA: Record<VarianteTarjetaLaboratorio, string> = {
   base: "panel-laboratorio",
   elevada: "panel-laboratorio-elevado",
   alerta:
-    "rounded-2xl border border-rojo-anulado/40 bg-rojo-anulado/[0.07] shadow-[0_12px_32px_-12px_rgba(127,29,29,0.55)] backdrop-blur-md",
+    "rounded-2xl border border-rojo-anulado/40 bg-rojo-anulado/[0.07] shadow-[0_12px_32px_-12px_rgba(127,29,29,0.55)] claro:shadow-[0_10px_28px_-14px_rgba(220,38,38,0.2)] backdrop-blur-md",
   exito:
-    "rounded-2xl border border-verde-inducido/35 bg-verde-inducido/[0.06] shadow-[0_12px_32px_-12px_rgba(6,78,59,0.5)] backdrop-blur-md",
+    "rounded-2xl border border-verde-inducido/35 bg-verde-inducido/[0.06] shadow-[0_12px_32px_-12px_rgba(6,78,59,0.5)] claro:shadow-[0_10px_28px_-14px_rgba(5,150,105,0.18)] backdrop-blur-md",
 };
 
 const CLASES_ETIQUETA_VARIANTE: Record<VarianteTarjetaLaboratorio, string> = {

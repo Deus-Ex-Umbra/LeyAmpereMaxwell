@@ -2,9 +2,10 @@
 
 import { useMemo } from "react";
 import katex, { type TrustContext } from "katex";
+import { useTemaLaboratorio } from "@/contextos";
 import { combinarClases } from "@/lib/utils";
 
-const MACROS_DEUS_KATEX: Record<string, string> = {
+const MACROS_DEUS_KATEX_OSCURO: Record<string, string> = {
   "\\azul": "\\textcolor{##38bdf8}{#1}",
   "\\rojo": "\\textcolor{##f87171}{#1}",
   "\\verde": "\\textcolor{##34d399}{#1}",
@@ -12,6 +13,17 @@ const MACROS_DEUS_KATEX: Record<string, string> = {
   "\\naranja": "\\textcolor{##fb923c}{#1}",
   "\\destacar": "\\fcolorbox{##d97706}{##292008}{$\\textcolor{##fde68a}{#1}$}",
   "\\tachar": "\\textcolor{##f87171}{\\cancel{#1}}",
+  "\\vec": "\\mathbf{#1}",
+};
+
+const MACROS_DEUS_KATEX_CLARO: Record<string, string> = {
+  "\\azul": "\\textcolor{##0052B4}{#1}",
+  "\\rojo": "\\textcolor{##B6321C}{#1}",
+  "\\verde": "\\textcolor{##008040}{#1}",
+  "\\morado": "\\textcolor{##7C3AED}{#1}",
+  "\\naranja": "\\textcolor{##C2410C}{#1}",
+  "\\destacar": "\\fcolorbox{##D4AC0D}{##FEF9E7}{$\\textcolor{##78350F}{#1}$}",
+  "\\tachar": "\\textcolor{##B6321C}{\\cancel{#1}}",
   "\\vec": "\\mathbf{#1}",
 };
 
@@ -43,20 +55,26 @@ export function FormulaKatex(_propiedades: PropiedadesFormulaKatex) {
     etiqueta_aria,
   } = _propiedades;
 
+  const { es_claro } = useTemaLaboratorio();
+
   const html_renderizado = useMemo(() => {
     const expresion_limpia = expresion.trim();
     if (!expresion_limpia) {
       return "";
     }
 
+    const macros_activos = es_claro
+      ? MACROS_DEUS_KATEX_CLARO
+      : MACROS_DEUS_KATEX_OSCURO;
+
     return katex.renderToString(expresion_limpia, {
       displayMode: en_bloque,
       throwOnError: false,
       strict: false,
-      macros: { ...MACROS_DEUS_KATEX },
+      macros: { ...macros_activos },
       trust: confiar_html ? evaluarConfianzaHtml : false,
     });
-  }, [expresion, en_bloque, confiar_html]);
+  }, [expresion, en_bloque, confiar_html, es_claro]);
 
   const Etiqueta = en_bloque ? "div" : "span";
 

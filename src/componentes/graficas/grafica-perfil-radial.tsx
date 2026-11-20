@@ -4,6 +4,7 @@ import { useCallback, useId, useMemo, useRef, useState } from "react";
 import { Activity, MoveHorizontal } from "lucide-react";
 import { FormulaKatex } from "@/componentes/ecuaciones/formula-katex";
 import { InsigniaEstado, TarjetaLaboratorio } from "@/componentes/ui";
+import { useTemaLaboratorio } from "@/contextos";
 import {
   COLORES_VECTORES,
   DOS_PI,
@@ -146,6 +147,7 @@ export function GraficaPerfilRadial(
   } = _propiedades;
 
   const prefijo_id = useId().replace(/:/g, "");
+  const { es_claro } = useTemaLaboratorio();
   const [modo_curvas, setModoCurvas] = useState<ModoCurvasRadial>("ambos");
   const [radio_sobre, setRadioSobre] = useState<number | null>(null);
   const [arrastrando, setArrastrando] = useState<boolean>(false);
@@ -712,7 +714,7 @@ export function GraficaPerfilRadial(
         )}
       </div>
 
-      <div className="relative overflow-hidden rounded-xl border border-borde-panel bg-[#060a13]">
+      <div className="relative overflow-hidden rounded-xl border border-borde-panel bg-fondo-base">
         <svg
           ref={svg_ref}
           viewBox={`0 0 ${ANCHO_SVG} ${ALTO_SVG}`}
@@ -757,8 +759,8 @@ export function GraficaPerfilRadial(
             y={MARGEN_SUP}
             width={ANCHO_AREA}
             height={ALTO_AREA}
-            fill="#091020"
-            stroke="rgba(148,163,184,0.22)"
+            fill={es_claro ? "#ffffff" : "#091020"}
+            stroke={es_claro ? "rgba(15,23,42,0.18)" : "rgba(148,163,184,0.22)"}
             strokeWidth={1}
           />
 
@@ -781,7 +783,7 @@ export function GraficaPerfilRadial(
                     x={x1 + ancho_banda * 0.5}
                     y={MARGEN_SUP + 14}
                     textAnchor="middle"
-                    fill="#94a3b8"
+                    fill={es_claro ? "#475569" : "#94a3b8"}
                     fontSize={9.5}
                     fontFamily="var(--font-mono), monospace"
                   >
@@ -794,7 +796,11 @@ export function GraficaPerfilRadial(
 
           {/* Rejilla menor (Regla 04) */}
           {[0.125, 0.375, 0.625, 0.875].map((_f) => (
-            <g key={`minor-${_f}`} stroke="rgba(148,163,184,0.06)" strokeWidth={0.75}>
+            <g
+              key={`minor-${_f}`}
+              stroke={es_claro ? "rgba(15,23,42,0.06)" : "rgba(148,163,184,0.06)"}
+              strokeWidth={0.75}
+            >
               <line
                 x1={MARGEN_IZQ + _f * ANCHO_AREA}
                 y1={MARGEN_SUP}
@@ -822,7 +828,9 @@ export function GraficaPerfilRadial(
                   y1={y}
                   x2={MARGEN_IZQ + ANCHO_AREA}
                   y2={y}
-                  stroke="rgba(148,163,184,0.14)"
+                  stroke={
+                    es_claro ? "rgba(15,23,42,0.12)" : "rgba(148,163,184,0.14)"
+                  }
                   strokeWidth={0.9}
                 />
                 {mostrar_b && (
@@ -842,7 +850,7 @@ export function GraficaPerfilRadial(
                     x={MARGEN_IZQ + ANCHO_AREA + 8}
                     y={y + 3.5}
                     textAnchor="start"
-                    fill={COLOR_CURVA_H}
+                    fill={es_claro ? "#c2410c" : COLOR_CURVA_H}
                     fontSize={9.5}
                     fontFamily="var(--font-mono), monospace"
                   >
@@ -863,14 +871,16 @@ export function GraficaPerfilRadial(
                   y1={MARGEN_SUP}
                   x2={x}
                   y2={y_base}
-                  stroke="rgba(148,163,184,0.14)"
+                  stroke={
+                    es_claro ? "rgba(15,23,42,0.12)" : "rgba(148,163,184,0.14)"
+                  }
                   strokeWidth={0.9}
                 />
                 <text
                   x={x}
                   y={y_base + 16}
                   textAnchor="middle"
-                  fill="#94a3b8"
+                  fill={es_claro ? "#475569" : "#94a3b8"}
                   fontSize={9.5}
                   fontFamily="var(--font-mono), monospace"
                 >
@@ -885,7 +895,7 @@ export function GraficaPerfilRadial(
             x={MARGEN_IZQ + ANCHO_AREA * 0.5}
             y={ALTO_SVG - 10}
             textAnchor="middle"
-            fill="#cbd5e1"
+            fill={es_claro ? "#0f172a" : "#cbd5e1"}
             fontSize={11}
             fontFamily="var(--font-mono), monospace"
           >
@@ -939,9 +949,9 @@ export function GraficaPerfilRadial(
                   width={32}
                   height={15}
                   rx={4}
-                  fill="#0b1222"
+                  fill={es_claro ? "#ffffff" : "#0b1222"}
                   stroke={_m.color}
-                  strokeOpacity={0.55}
+                  strokeOpacity={0.65}
                   strokeWidth={0.9}
                 />
                 <text
@@ -1023,7 +1033,7 @@ export function GraficaPerfilRadial(
               y1={MARGEN_SUP}
               x2={x_cursor}
               y2={y_base}
-              stroke={COLOR_CURSOR}
+              stroke={es_claro ? "#b45309" : COLOR_CURSOR}
               strokeWidth={1.7}
             />
             {mostrar_b && (
@@ -1032,7 +1042,7 @@ export function GraficaPerfilRadial(
                 cy={y_cursor_b}
                 r={5}
                 fill={COLOR_CURVA_B}
-                stroke="#f8fafc"
+                stroke={es_claro ? "#ffffff" : "#f8fafc"}
                 strokeWidth={1.6}
               />
             )}
@@ -1042,13 +1052,13 @@ export function GraficaPerfilRadial(
                 cy={y_cursor_h}
                 r={4.2}
                 fill={COLOR_CURVA_H}
-                stroke="#060a13"
+                stroke={es_claro ? "#ffffff" : "#060a13"}
                 strokeWidth={1.4}
               />
             )}
             <polygon
               points={`${x_cursor},${MARGEN_SUP + 2} ${x_cursor - 5},${MARGEN_SUP - 6} ${x_cursor + 5},${MARGEN_SUP - 6}`}
-              fill={COLOR_CURSOR}
+              fill={es_claro ? "#b45309" : COLOR_CURSOR}
             />
           </g>
 
@@ -1060,7 +1070,9 @@ export function GraficaPerfilRadial(
                 y1={MARGEN_SUP}
                 x2={x_globo}
                 y2={y_base}
-                stroke="rgba(241,245,249,0.35)"
+                stroke={
+                  es_claro ? "rgba(15,23,42,0.3)" : "rgba(241,245,249,0.35)"
+                }
                 strokeWidth={1}
                 strokeDasharray="2 2"
               />
@@ -1075,14 +1087,22 @@ export function GraficaPerfilRadial(
                   width={176}
                   height={punto_sobre.referencia_b !== undefined ? 84 : 70}
                   rx={8}
-                  fill="rgba(11, 18, 34, 0.95)"
-                  stroke="rgba(56, 189, 248, 0.4)"
+                  fill={
+                    es_claro
+                      ? "rgba(255, 255, 255, 0.96)"
+                      : "rgba(11, 18, 34, 0.95)"
+                  }
+                  stroke={
+                    es_claro
+                      ? "rgba(2, 132, 199, 0.45)"
+                      : "rgba(56, 189, 248, 0.4)"
+                  }
                   strokeWidth={1}
                 />
                 <text
                   x={10}
                   y={16}
-                  fill="#f8fafc"
+                  fill={es_claro ? "#0f172a" : "#f8fafc"}
                   fontSize={10}
                   fontWeight={600}
                   fontFamily="var(--font-mono), monospace"
@@ -1092,7 +1112,7 @@ export function GraficaPerfilRadial(
                 <text
                   x={10}
                   y={30}
-                  fill="#94a3b8"
+                  fill={es_claro ? "#475569" : "#94a3b8"}
                   fontSize={9}
                   fontFamily="var(--font-sans), sans-serif"
                 >

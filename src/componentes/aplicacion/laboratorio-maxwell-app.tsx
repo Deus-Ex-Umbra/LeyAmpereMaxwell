@@ -342,7 +342,7 @@ export function LaboratorioMaxwellApp() {
         <aside
           role="status"
           aria-live="polite"
-          className="fixed right-4 bottom-4 z-40 flex max-w-sm items-start gap-3 rounded-2xl border border-verde-inducido/45 bg-fondo-elevado/95 p-4 shadow-[0_20px_48px_-12px_rgba(2,6,23,0.92)] backdrop-blur-xl"
+          className="fixed right-4 bottom-4 z-40 flex max-w-sm items-start gap-3 rounded-2xl border border-verde-inducido/45 bg-fondo-elevado/95 p-4 shadow-[0_20px_48px_-12px_rgba(2,6,23,0.92)] claro:shadow-[0_16px_40px_-12px_rgba(15,23,42,0.22)] backdrop-blur-xl"
         >
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-verde-inducido/40 bg-verde-inducido/15 text-verde-inducido">
             <Award className="h-5 w-5" aria-hidden="true" />

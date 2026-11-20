@@ -2,6 +2,7 @@
 
 import { useCallback, useId, useMemo, useRef, useState } from "react";
 import { TrendingUp } from "lucide-react";
+import { useTemaLaboratorio } from "@/contextos";
 import { FormulaKatex } from "@/componentes/ecuaciones/formula-katex";
 import { InsigniaEstado, TarjetaLaboratorio } from "@/componentes/ui";
 import {
@@ -81,9 +82,14 @@ export function GraficaRegimenBode(
     clase_extra,
   } = _propiedades;
 
+  const { es_claro } = useTemaLaboratorio();
   const prefijo_id = useId().replace(/:/g, "");
   const [log_f_sobre, setLogFSobre] = useState<number | null>(null);
   const svg_ref = useRef<SVGSVGElement | null>(null);
+  const color_jc = es_claro ? "#d97706" : COLORES_VECTORES.jc;
+  const color_jd = es_claro ? "#0284c7" : COLORES_VECTORES.jd;
+  const color_cruce = es_claro ? "#047857" : "#34d399";
+  const color_cursor_f = es_claro ? "#b45309" : "#facc15";
 
   const modelo = useMemo(() => {
     const sigma = Math.max(conductividad_s_m, 0);
@@ -269,7 +275,7 @@ export function GraficaRegimenBode(
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-texto-principal">
             <span
               className="h-0.5 w-4 rounded-full"
-              style={{ backgroundColor: COLORES_VECTORES.jc }}
+              style={{ backgroundColor: color_jc }}
             />
             <FormulaKatex expresion="|J_c| = \sigma E" />
             <span className="text-texto-secundario">
@@ -279,7 +285,7 @@ export function GraficaRegimenBode(
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-texto-principal">
             <span
               className="h-0.5 w-4 rounded-full"
-              style={{ backgroundColor: COLORES_VECTORES.jd }}
+              style={{ backgroundColor: color_jd }}
             />
             <FormulaKatex expresion="|J_d| = \omega\varepsilon E" />
             <span className="text-texto-secundario">
@@ -295,7 +301,7 @@ export function GraficaRegimenBode(
         </span>
       </div>
 
-      <div className="relative overflow-hidden rounded-xl border border-borde-panel bg-[#060a13]">
+      <div className="relative overflow-hidden rounded-xl border border-borde-panel bg-fondo-base">
         <svg
           ref={svg_ref}
           viewBox={`0 0 ${ANCHO_SVG} ${ALTO_SVG}`}
@@ -367,8 +373,8 @@ export function GraficaRegimenBode(
             y={MARGEN_SUP}
             width={ANCHO_AREA}
             height={ALTO_AREA}
-            fill="#091020"
-            stroke="rgba(148,163,184,0.22)"
+            fill={es_claro ? "#ffffff" : "#091020"}
+            stroke={es_claro ? "rgba(15,23,42,0.16)" : "rgba(148,163,184,0.22)"}
             strokeWidth={1}
           />
 
@@ -380,28 +386,40 @@ export function GraficaRegimenBode(
                 y={MARGEN_SUP}
                 width={Math.max(0, x_zona_cond_fin - MARGEN_IZQ)}
                 height={ALTO_AREA}
-                fill="rgba(251, 191, 36, 0.08)"
+                fill={
+                  es_claro
+                    ? "rgba(217, 119, 6, 0.08)"
+                    : "rgba(251, 191, 36, 0.08)"
+                }
               />
               <rect
                 x={x_zona_cond_fin}
                 y={MARGEN_SUP}
                 width={Math.max(0, x_zona_diel_ini - x_zona_cond_fin)}
                 height={ALTO_AREA}
-                fill="rgba(168, 85, 247, 0.09)"
+                fill={
+                  es_claro
+                    ? "rgba(124, 58, 237, 0.08)"
+                    : "rgba(168, 85, 247, 0.09)"
+                }
               />
               <rect
                 x={x_zona_diel_ini}
                 y={MARGEN_SUP}
                 width={Math.max(0, MARGEN_IZQ + ANCHO_AREA - x_zona_diel_ini)}
                 height={ALTO_AREA}
-                fill="rgba(56, 189, 248, 0.06)"
+                fill={
+                  es_claro
+                    ? "rgba(2, 132, 199, 0.07)"
+                    : "rgba(56, 189, 248, 0.06)"
+                }
               />
               {x_zona_cond_fin - MARGEN_IZQ > 68 && (
                 <text
                   x={MARGEN_IZQ + (x_zona_cond_fin - MARGEN_IZQ) * 0.5}
                   y={MARGEN_SUP + 14}
                   textAnchor="middle"
-                  fill="#fbbf24"
+                  fill={color_jc}
                   fontSize={9.5}
                   fontFamily="var(--font-mono), monospace"
                 >
@@ -416,7 +434,7 @@ export function GraficaRegimenBode(
                   }
                   y={MARGEN_SUP + 14}
                   textAnchor="middle"
-                  fill="#38bdf8"
+                  fill={color_jd}
                   fontSize={9.5}
                   fontFamily="var(--font-mono), monospace"
                 >
@@ -431,13 +449,17 @@ export function GraficaRegimenBode(
                 y={MARGEN_SUP}
                 width={ANCHO_AREA}
                 height={ALTO_AREA}
-                fill="rgba(56, 189, 248, 0.06)"
+                fill={
+                  es_claro
+                    ? "rgba(2, 132, 199, 0.07)"
+                    : "rgba(56, 189, 248, 0.06)"
+                }
               />
               <text
                 x={MARGEN_IZQ + ANCHO_AREA * 0.5}
                 y={MARGEN_SUP + 15}
                 textAnchor="middle"
-                fill="#38bdf8"
+                fill={color_jd}
                 fontSize={10}
                 fontFamily="var(--font-mono), monospace"
               >
@@ -466,7 +488,11 @@ export function GraficaRegimenBode(
                       y1={MARGEN_SUP}
                       x2={xs}
                       y2={y_base}
-                      stroke="rgba(148,163,184,0.05)"
+                      stroke={
+                        es_claro
+                          ? "rgba(15,23,42,0.06)"
+                          : "rgba(148,163,184,0.05)"
+                      }
                       strokeWidth={0.7}
                     />
                   );
@@ -476,7 +502,11 @@ export function GraficaRegimenBode(
                   y1={MARGEN_SUP}
                   x2={x_dec}
                   y2={y_base}
-                  stroke="rgba(148,163,184,0.14)"
+                  stroke={
+                    es_claro
+                      ? "rgba(15,23,42,0.14)"
+                      : "rgba(148,163,184,0.14)"
+                  }
                   strokeWidth={0.9}
                 />
                 {mostrar_etiqueta && (
@@ -484,7 +514,7 @@ export function GraficaRegimenBode(
                     x={x_dec}
                     y={y_base + 16}
                     textAnchor="middle"
-                    fill="#94a3b8"
+                    fill={es_claro ? "#475569" : "#94a3b8"}
                     fontSize={9.5}
                     fontFamily="var(--font-mono), monospace"
                   >
@@ -507,7 +537,11 @@ export function GraficaRegimenBode(
                   y1={y_dec}
                   x2={MARGEN_IZQ + ANCHO_AREA}
                   y2={y_dec}
-                  stroke="rgba(148,163,184,0.13)"
+                  stroke={
+                    es_claro
+                      ? "rgba(15,23,42,0.13)"
+                      : "rgba(148,163,184,0.13)"
+                  }
                   strokeWidth={0.9}
                 />
                 {mostrar_etiqueta && (
@@ -515,7 +549,7 @@ export function GraficaRegimenBode(
                     x={MARGEN_IZQ - 8}
                     y={y_dec + 3.5}
                     textAnchor="end"
-                    fill="#94a3b8"
+                    fill={es_claro ? "#475569" : "#94a3b8"}
                     fontSize={9.5}
                     fontFamily="var(--font-mono), monospace"
                   >
@@ -530,7 +564,7 @@ export function GraficaRegimenBode(
             x={MARGEN_IZQ + ANCHO_AREA * 0.5}
             y={ALTO_SVG - 10}
             textAnchor="middle"
-            fill="#cbd5e1"
+            fill={es_claro ? "#334155" : "#cbd5e1"}
             fontSize={10.5}
             fontFamily="var(--font-mono), monospace"
           >
@@ -540,7 +574,7 @@ export function GraficaRegimenBode(
             x={14}
             y={MARGEN_SUP + ALTO_AREA * 0.5}
             textAnchor="middle"
-            fill="#cbd5e1"
+            fill={es_claro ? "#334155" : "#cbd5e1"}
             fontSize={10.5}
             fontFamily="var(--font-mono), monospace"
             transform={`rotate(-90 14 ${MARGEN_SUP + ALTO_AREA * 0.5})`}
@@ -556,14 +590,14 @@ export function GraficaRegimenBode(
                 y1={y_jc}
                 x2={MARGEN_IZQ + ANCHO_AREA}
                 y2={y_jc}
-                stroke={COLORES_VECTORES.jc}
+                stroke={color_jc}
                 strokeWidth={2.3}
               />
             )}
             <path
               d={ruta_jd}
               fill="none"
-              stroke={COLORES_VECTORES.jd}
+              stroke={color_jd}
               strokeWidth={2.3}
               strokeLinecap="round"
             />
@@ -577,7 +611,7 @@ export function GraficaRegimenBode(
                 y1={MARGEN_SUP}
                 x2={x_fc}
                 y2={y_base}
-                stroke="#34d399"
+                stroke={color_cruce}
                 strokeWidth={1.3}
                 strokeDasharray="4 4"
               />
@@ -585,8 +619,8 @@ export function GraficaRegimenBode(
                 cx={x_fc}
                 cy={y_jc}
                 r={5.5}
-                fill="#060a13"
-                stroke="#34d399"
+                fill={es_claro ? "#ffffff" : "#060a13"}
+                stroke={color_cruce}
                 strokeWidth={2.2}
               />
               <rect
@@ -595,15 +629,17 @@ export function GraficaRegimenBode(
                 width={84}
                 height={16}
                 rx={4}
-                fill="#0b1222"
-                stroke="rgba(52,211,153,0.55)"
+                fill={es_claro ? "#ecfdf5" : "#0b1222"}
+                stroke={
+                  es_claro ? "rgba(4,120,87,0.45)" : "rgba(52,211,153,0.55)"
+                }
                 strokeWidth={0.9}
               />
               <text
                 x={Math.min(Math.max(x_fc, MARGEN_IZQ + 46), MARGEN_IZQ + ANCHO_AREA - 46)}
                 y={MARGEN_SUP - 8}
                 textAnchor="middle"
-                fill="#34d399"
+                fill={color_cruce}
                 fontSize={9}
                 fontWeight={600}
                 fontFamily="var(--font-mono), monospace"
@@ -621,7 +657,7 @@ export function GraficaRegimenBode(
                 y1={MARGEN_SUP}
                 x2={x_actual}
                 y2={y_base}
-                stroke="#facc15"
+                stroke={color_cursor_f}
                 strokeWidth={1.6}
               />
               {y_jc !== null && (
@@ -629,8 +665,8 @@ export function GraficaRegimenBode(
                   cx={x_actual}
                   cy={y_jc}
                   r={4.2}
-                  fill={COLORES_VECTORES.jc}
-                  stroke="#060a13"
+                  fill={color_jc}
+                  stroke={es_claro ? "#ffffff" : "#060a13"}
                   strokeWidth={1.3}
                 />
               )}
@@ -638,8 +674,8 @@ export function GraficaRegimenBode(
                 cx={x_actual}
                 cy={Math.max(MARGEN_SUP, Math.min(y_base, y_jd_actual))}
                 r={4.5}
-                fill={COLORES_VECTORES.jd}
-                stroke="#f8fafc"
+                fill={color_jd}
+                stroke={es_claro ? "#ffffff" : "#f8fafc"}
                 strokeWidth={1.3}
               />
             </g>
@@ -653,7 +689,9 @@ export function GraficaRegimenBode(
                 y1={MARGEN_SUP}
                 x2={x_sobre}
                 y2={y_base}
-                stroke="rgba(241,245,249,0.35)"
+                stroke={
+                  es_claro ? "rgba(15,23,42,0.35)" : "rgba(241,245,249,0.35)"
+                }
                 strokeWidth={1}
                 strokeDasharray="2 2"
               />
@@ -668,14 +706,22 @@ export function GraficaRegimenBode(
                   width={178}
                   height={76}
                   rx={8}
-                  fill="rgba(11, 18, 34, 0.95)"
-                  stroke="rgba(56, 189, 248, 0.4)"
+                  fill={
+                    es_claro
+                      ? "rgba(255, 255, 255, 0.97)"
+                      : "rgba(11, 18, 34, 0.95)"
+                  }
+                  stroke={
+                    es_claro
+                      ? "rgba(2, 132, 199, 0.35)"
+                      : "rgba(56, 189, 248, 0.4)"
+                  }
                   strokeWidth={1}
                 />
                 <text
                   x={10}
                   y={16}
-                  fill="#f8fafc"
+                  fill={es_claro ? "#0f172a" : "#f8fafc"}
                   fontSize={9.5}
                   fontWeight={600}
                   fontFamily="var(--font-mono), monospace"
@@ -685,7 +731,7 @@ export function GraficaRegimenBode(
                 <text
                   x={10}
                   y={32}
-                  fill={COLORES_VECTORES.jc}
+                  fill={color_jc}
                   fontSize={9.5}
                   fontFamily="var(--font-mono), monospace"
                 >
@@ -694,7 +740,7 @@ export function GraficaRegimenBode(
                 <text
                   x={10}
                   y={47}
-                  fill={COLORES_VECTORES.jd}
+                  fill={color_jd}
                   fontSize={9.5}
                   fontFamily="var(--font-mono), monospace"
                 >
@@ -703,7 +749,7 @@ export function GraficaRegimenBode(
                 <text
                   x={10}
                   y={63}
-                  fill="#94a3b8"
+                  fill={es_claro ? "#475569" : "#94a3b8"}
                   fontSize={9}
                   fontFamily="var(--font-mono), monospace"
                 >

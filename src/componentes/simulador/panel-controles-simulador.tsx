@@ -186,12 +186,12 @@ function InterruptorMaxwellDestacado(
         aria-hidden="true"
         className={combinarClases(
           "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border transition-colors",
-          activo ? "border-white/20" : "border-slate-700 bg-slate-800/90",
+          activo ? "border-borde-activo" : "border-borde-panel bg-panel-suave",
         )}
         style={
           activo
             ? {
-                backgroundColor: `color-mix(in srgb, ${color_indicador} 45%, #0f172a)`,
+                backgroundColor: `color-mix(in srgb, ${color_indicador} 55%, var(--panel))`,
               }
             : undefined
         }
