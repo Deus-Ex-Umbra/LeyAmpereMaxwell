@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Inter, JetBrains_Mono, Outfit, Space_Grotesk, Syne } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
+import { PantallaBloqueoGlitch } from "@/componentes/bloqueo";
 import { FondoEcuacionesMaxwell } from "@/componentes/fondo/fondo-ecuaciones-maxwell";
 import { CLAVE_ALMACENAMIENTO_TEMA, ProveedorTema } from "@/contextos";
 
@@ -23,11 +24,26 @@ const FUENTE_MONO = JetBrains_Mono({
   display: "swap",
 });
 
+const FUENTE_OUTFIT = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  display: "swap",
+});
+
+const FUENTE_SYNE = Syne({
+  subsets: ["latin"],
+  variable: "--font-syne",
+  display: "swap",
+});
+
 const SCRIPT_INICIALIZACION_TEMA = `
 (function(){
   try {
-    var t = localStorage.getItem(${JSON.stringify(CLAVE_ALMACENAMIENTO_TEMA)});
     var r = document.documentElement;
+    if (new URLSearchParams(window.location.search).get("lock") === "1") {
+      r.classList.add("bloqueo-dimensional");
+    }
+    var t = localStorage.getItem(${JSON.stringify(CLAVE_ALMACENAMIENTO_TEMA)});
     if (t === "claro") {
       r.classList.remove("dark");
       r.classList.add("claro");
@@ -73,7 +89,7 @@ export default function RootLayout(
     <html
       lang="es"
       suppressHydrationWarning
-      className={`dark ${FUENTE_ESPACIO.variable} ${FUENTE_INTER.variable} ${FUENTE_MONO.variable}`}
+      className={`dark ${FUENTE_ESPACIO.variable} ${FUENTE_INTER.variable} ${FUENTE_MONO.variable} ${FUENTE_OUTFIT.variable} ${FUENTE_SYNE.variable}`}
     >
       <head>
         <script
@@ -82,8 +98,11 @@ export default function RootLayout(
       </head>
       <body className="relative min-h-dvh font-sans antialiased text-texto-principal selection:bg-azul-activo/30 selection:text-texto-principal">
         <ProveedorTema>
-          <FondoEcuacionesMaxwell />
-          <div className="relative z-0 flex min-h-dvh flex-col">{children}</div>
+          <div className="contenido-principal-laboratorio relative flex min-h-dvh flex-col">
+            <FondoEcuacionesMaxwell />
+            <div className="relative z-0 flex min-h-dvh flex-col">{children}</div>
+          </div>
+          <PantallaBloqueoGlitch />
         </ProveedorTema>
       </body>
     </html>
